@@ -1,0 +1,8 @@
+name: LobbySystem
+version: '${project.version}'
+main: de.noque.lobbysystem.LobbySystem
+api-version: 1.19
+commands:
+  setlobby:
+  lobby:
+    aliases: [l, hub]
