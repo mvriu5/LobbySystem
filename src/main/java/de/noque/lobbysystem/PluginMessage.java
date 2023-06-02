@@ -33,7 +33,7 @@ public class PluginMessage implements PluginMessageListener {
         ByteArrayDataInput input = ByteStreams.newDataInput(message);
         String subChannel = input.readUTF();
 
-        if (subChannel.equals("GetServers")) {
+        if (subChannel.equals("GetServers")) { //BungeeCord
             short serverCount = input.readShort();
             for (int i = 0; i < serverCount; i++) {
                 serverList.add(input.readUTF());
