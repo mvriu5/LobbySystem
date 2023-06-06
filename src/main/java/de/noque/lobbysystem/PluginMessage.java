@@ -14,16 +14,9 @@ import java.util.List;
 public class PluginMessage implements PluginMessageListener {
 
     private LobbySystem plugin;
-    @Getter
-    private List<String> serverList;
 
     public PluginMessage(LobbySystem plugin) {
         this.plugin = plugin;
-        this.serverList = new ArrayList<>();
-    }
-
-    public void registerChannel(Player player) {
-        player.sendPluginMessage(plugin, "BungeeCord", getServers());
     }
 
     @Override
@@ -32,27 +25,16 @@ public class PluginMessage implements PluginMessageListener {
 
         ByteArrayDataInput input = ByteStreams.newDataInput(message);
         String subChannel = input.readUTF();
-
-        if (subChannel.equals("GetServers")) {
-            short serverCount = input.readShort();
-            for (int i = 0; i < serverCount; i++) {
-                serverList.add(input.readUTF());
-            }
+        if (subChannel.equals("Connect")) {
+            String server = input.readUTF();
         }
     }
 
     public void connect(Player player, String server) {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
-
         output.writeUTF("Connect");
         output.writeUTF(server);
 
         player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
-    }
-
-    public byte[] getServers() {
-        ByteArrayDataOutput output = ByteStreams.newDataOutput();
-        output.writeUTF("GetServers");
-        return output.toByteArray();
     }
 }

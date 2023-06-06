@@ -1,4 +1,4 @@
-package de.noque.lobbysystem;
+package de.noque.lobbysystem.serverselector;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,40 +35,5 @@ public class SelectorGUI {
         selectorInv.setItem(0, itemRace);
 
         player.openInventory(selectorInv);
-    }
-
-    public static void openItemRace(Player player) {
-        PluginMessage pluginMessage = new PluginMessage(LobbySystem.INSTANCE);
-
-        Bukkit.getScheduler().runTaskAsynchronously(LobbySystem.INSTANCE, () -> {
-            pluginMessage.registerChannel(player);
-
-            Bukkit.getScheduler().runTaskLater(LobbySystem.INSTANCE, () -> {
-                List<String> serverList = pluginMessage.getServerList();
-
-                Inventory inv = Bukkit.createInventory(null, 9, Component.text("ItemRace Servers", NamedTextColor.GREEN));
-
-                for (String server : serverList) {
-                    ItemStack item = createServerItem(server);
-                    inv.addItem(item);
-                }
-                player.openInventory(inv);
-            }, 20);
-        });
-    }
-
-    private static ItemStack createServerItem(String serverName) {
-        ItemStack item = new ItemStack(Material.GREEN_WOOL);
-
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(serverName, NamedTextColor.GOLD));
-
-        List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Players: " + Bukkit.getOnlinePlayers(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-        meta.lore(lore);
-
-        item.setItemMeta(meta);
-
-        return item;
     }
 }

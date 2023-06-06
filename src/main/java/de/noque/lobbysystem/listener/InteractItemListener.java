@@ -1,7 +1,7 @@
 package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
-import de.noque.lobbysystem.SelectorGUI;
+import de.noque.lobbysystem.serverselector.SelectorGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -12,12 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InteractItemListener implements Listener {
 

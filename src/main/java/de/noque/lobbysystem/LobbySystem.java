@@ -1,7 +1,6 @@
 package de.noque.lobbysystem;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
+import com.mongodb.client.MongoCollection;
 import de.noque.lobbysystem.command.LobbyCommand;
 import de.noque.lobbysystem.command.SetobbyCommand;
 import de.noque.lobbysystem.listener.ConnectionListener;
@@ -9,22 +8,32 @@ import de.noque.lobbysystem.listener.InteractItemListener;
 import de.noque.lobbysystem.listener.InventoryListener;
 import de.noque.lobbysystem.listener.PreventionListener;
 import lombok.Getter;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 
 public final class LobbySystem extends JavaPlugin {
 
     public static LobbySystem INSTANCE;
+
     public static Configuration config;
+
+    //MongoDB
+    @Getter
+    private MongoManager mongoManager;
+    @Getter
+    private static MongoCollection<Document> serverCollection;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
+
+        //DATABASE
+        mongoManager = new MongoManager();
+        mongoManager.connect();
+        serverCollection = getMongoManager().getDatabase().getCollection("serverlist");
 
         /* CONFIG */
         config = this.getConfig();
@@ -51,7 +60,6 @@ public final class LobbySystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
-        this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
+        mongoManager.disconnect();
     }
 }

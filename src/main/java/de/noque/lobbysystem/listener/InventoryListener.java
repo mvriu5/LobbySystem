@@ -2,7 +2,7 @@ package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.PluginMessage;
-import de.noque.lobbysystem.SelectorGUI;
+import de.noque.lobbysystem.serverselector.ServerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener implements Listener {
@@ -26,12 +24,10 @@ public class InventoryListener implements Listener {
             if (e.getCurrentItem() == null) return;
 
             switch (e.getCurrentItem().getType()) {
-                case GOLDEN_SHOVEL:
+                case GOLDEN_SHOVEL-> {
                     player.closeInventory();
-                    SelectorGUI.openItemRace(player);
-                    break;
-                default:
-                    break;
+                    player.openInventory(ServerData.getServerInventory().get(0));
+                }
             }
         }
 
@@ -41,7 +37,7 @@ public class InventoryListener implements Listener {
             ItemStack clickedItem = e.getCurrentItem();
 
             if (clickedItem != null && clickedItem.getType() != Material.AIR) {
-                String server = clickedItem.getItemMeta().getDisplayName();
+                String server = clickedItem.getItemMeta().displayName().toString();
                 PluginMessage pluginMessage = new PluginMessage(LobbySystem.INSTANCE);
                 pluginMessage.connect(player, server);
             }
