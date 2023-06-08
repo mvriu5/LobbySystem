@@ -3,15 +3,14 @@ package de.noque.lobbysystem.serverselector;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import de.noque.lobbysystem.LobbySystem;
+import de.noque.lobbysystem.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,8 @@ import java.util.List;
 public class ServerData {
 
     public static ServerInstance loadServerFromDB(Document server) {
-        Document found = LobbySystem.getServerCollection().find(Filters.eq("servername", server)).first();
+        String name =  server.getString("servername");
+        Document found = LobbySystem.getServerCollection().find(Filters.eq("servername", name)).first();
         assert found != null;
 
         String serverName = (String) found.get("servername");
@@ -48,40 +48,40 @@ public class ServerData {
         invList.add(itemRaceInv);
 
         for (ServerInstance server : getServerList()) {
-            ItemStack item = new ItemStack(Material.BARRIER);
+            ItemBuilder item = null;
             String serverDescription = null;
 
             switch (server.getServerState()) {
                 case "waiting" -> {
-                    item.setType(Material.GREEN_WOOL);
+                    item = new ItemBuilder(Material.GREEN_WOOL);
                     serverDescription = "WAITING...";
                 }
                 case "starting" -> {
-                    item.setType(Material.ORANGE_WOOL);
+                    item = new ItemBuilder(Material.ORANGE_WOOL);
                     serverDescription = "STARTING...";
                 }
                 case "ingame" -> {
-                    item.setType(Material.RED_WOOL);
+                    item = new ItemBuilder(Material.RED_WOOL);
                     serverDescription = "INGAME...";
                 }
                 case "restarting" -> {
-                    item.setType(Material.CYAN_WOOL);
+                    item = new ItemBuilder(Material.CYAN_WOOL);
                     serverDescription = "RESTARTING...";
+                }
+                default -> {
+                    return null;
                 }
             }
             item.setAmount(server.getPlayerCount());
+            item.setName(Component.text(server.getServerName(), NamedTextColor.GOLD));
 
-            ItemMeta meta = item.getItemMeta();
-            meta.displayName(Component.text(server.getServerName(), NamedTextColor.GOLD));
-
-            List<Component> lore = new ArrayList<>();
-            lore.add(Component.text(serverDescription, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            meta.lore(lore);
-
-            item.setItemMeta(meta);
+            List<TextComponent> lore = new ArrayList<>();
+            lore.add(Component.text(serverDescription, NamedTextColor.YELLOW));
+            lore.add(Component.text(server.getPlayerCount() + "/2", NamedTextColor.YELLOW));
+            item.setLore(lore);
 
             switch(server.getGameMode()) {
-                case "itemrace" -> itemRaceInv.addItem(item);
+                case "itemrace" -> itemRaceInv.addItem(item.toItemStack());
             }
         }
         return invList;

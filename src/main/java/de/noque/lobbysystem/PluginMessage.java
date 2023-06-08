@@ -24,13 +24,12 @@ public class PluginMessage implements PluginMessageListener {
         if (!channel.equals("BungeeCord")) return;
 
         ByteArrayDataInput input = ByteStreams.newDataInput(message);
-        String subChannel = input.readUTF();
-        if (subChannel.equals("Connect")) {
-            String server = input.readUTF();
-        }
+        String subchannel = input.readUTF();
+
+        if (subchannel.equals("Connect")) return;
     }
 
-    public void connect(Player player, String server) {
+    public void connect(String server, Player player) {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Connect");
         output.writeUTF(server);

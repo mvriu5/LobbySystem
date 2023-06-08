@@ -6,3 +6,4 @@ commands:
   setlobby:
   lobby:
     aliases: [l, hub]
+  friend:

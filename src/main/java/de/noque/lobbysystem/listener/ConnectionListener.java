@@ -1,7 +1,9 @@
 package de.noque.lobbysystem.listener;
 
+import com.mongodb.client.model.Filters;
 import de.noque.lobbysystem.ConfigManager;
 import de.noque.lobbysystem.LobbySystem;
+import de.noque.lobbysystem.friendsystem.FriendData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -13,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,6 +25,14 @@ import org.checkerframework.checker.units.qual.C;
 import static org.bukkit.Bukkit.getServer;
 
 public class ConnectionListener implements Listener {
+
+    @EventHandler
+    public void onLogin(PlayerLoginEvent e) {
+        Player player = e.getPlayer();
+        if (LobbySystem.getFriendCollection().find(Filters.eq("uuid", player.getUniqueId())).first() == null) {
+            LobbySystem.getFriendData().addDocument(player);
+        }
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -73,11 +84,15 @@ public class ConnectionListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
         e.quitMessage(Component.text(""));
+        LobbySystem.getFriendRequests().remove(player.getUniqueId());
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
+        Player player = e.getPlayer();
         e.leaveMessage(Component.text(""));
+        LobbySystem.getFriendRequests().remove(player.getUniqueId());
     }
 }

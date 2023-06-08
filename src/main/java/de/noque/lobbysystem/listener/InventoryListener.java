@@ -4,7 +4,9 @@ import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.PluginMessage;
 import de.noque.lobbysystem.serverselector.ServerData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +15,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener implements Listener {
+
+    private PluginMessage pluginMessage = new PluginMessage(LobbySystem.INSTANCE);
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
@@ -37,9 +41,10 @@ public class InventoryListener implements Listener {
             ItemStack clickedItem = e.getCurrentItem();
 
             if (clickedItem != null && clickedItem.getType() != Material.AIR) {
-                String server = clickedItem.getItemMeta().displayName().toString();
-                PluginMessage pluginMessage = new PluginMessage(LobbySystem.INSTANCE);
-                pluginMessage.connect(player, server);
+                Component serverComponent = clickedItem.getItemMeta().displayName();
+                assert serverComponent != null;
+                String server = PlainTextComponentSerializer.plainText().serialize(serverComponent);
+                pluginMessage.connect(server, player);
             }
         }
     }
