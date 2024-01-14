@@ -2,9 +2,8 @@ package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.PluginMessage;
-import de.noque.lobbysystem.serverselector.ServerData;
+import de.noque.lobbysystem.service.ServerService;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
@@ -30,7 +29,7 @@ public class InventoryListener implements Listener {
             switch (e.getCurrentItem().getType()) {
                 case GOLDEN_SHOVEL-> {
                     player.closeInventory();
-                    player.openInventory(ServerData.getServerInventory().get(0));
+                    player.openInventory(ServerService.getServerInventory().get(0));
                 }
             }
         }

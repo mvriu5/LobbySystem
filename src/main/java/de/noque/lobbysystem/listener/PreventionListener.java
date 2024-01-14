@@ -1,6 +1,6 @@
 package de.noque.lobbysystem.listener;
 
-import de.noque.lobbysystem.ConfigManager;
+import de.noque.lobbysystem.manager.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

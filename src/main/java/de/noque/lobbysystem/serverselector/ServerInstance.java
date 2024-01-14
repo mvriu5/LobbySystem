@@ -4,14 +4,10 @@ import lombok.Getter;
 
 public class ServerInstance {
 
-    @Getter
-    private String serverName;
-    @Getter
-    private String serverState;
-    @Getter
-    private String gameMode;
-    @Getter
-    private int playerCount;
+    private @Getter String serverName;
+    private @Getter String serverState;
+    private @Getter String gameMode;
+    private @Getter int playerCount;
 
     public ServerInstance(String _serverName, String _serverState, String _gameMode, int _playerCount) {
         serverName = _serverName;

@@ -1,8 +1,11 @@
-package de.noque.lobbysystem.serverselector;
+package de.noque.lobbysystem.service;
 
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import de.noque.lobbysystem.LobbySystem;
+import de.noque.lobbysystem.manager.MongoManager;
+import de.noque.lobbysystem.serverselector.ServerInstance;
 import de.noque.lobbysystem.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -15,11 +18,17 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerData {
+public class ServerService {
 
-    public static ServerInstance loadServerFromDB(Document server) {
+    private final MongoCollection<Document> _serverCollection;
+
+    public ServerService(LobbySystem lobbySystem) {
+        _serverCollection = lobbySystem.getMongoManager().getServerCollection();
+    }
+
+    public ServerInstance loadServerFromDB(Document server) {
         String name =  server.getString("servername");
-        Document found = LobbySystem.getServerCollection().find(Filters.eq("servername", name)).first();
+        Document found = _serverCollection.find(Filters.eq("servername", name)).first();
         assert found != null;
 
         String serverName = (String) found.get("servername");
@@ -30,10 +39,10 @@ public class ServerData {
         return new ServerInstance(serverName, serverState, gameMode, playerCount);
     }
 
-    public static List<ServerInstance> getServerList() {
+    public List<ServerInstance> getServerList() {
         List<ServerInstance> serverList = new ArrayList<>();
 
-        FindIterable<Document> findIterable = LobbySystem.getServerCollection().find();
+        FindIterable<Document> findIterable = _serverCollection.find();
         for (Document server : findIterable) {
             ServerInstance serverInstance = loadServerFromDB(server);
             serverList.add(serverInstance);
@@ -41,7 +50,7 @@ public class ServerData {
         return serverList;
     }
 
-    public static List<Inventory> getServerInventory() {
+    public List<Inventory> getServerInventory() {
         List<Inventory> invList = new ArrayList<>();
 
         Inventory itemRaceInv = Bukkit.createInventory(null, 9, Component.text("ItemRace Servers", NamedTextColor.GREEN));
