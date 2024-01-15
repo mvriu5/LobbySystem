@@ -13,10 +13,10 @@ import java.util.List;
 
 public class PluginMessage implements PluginMessageListener {
 
-    private LobbySystem plugin;
+    private final LobbySystem _lobbySystem;
 
-    public PluginMessage(LobbySystem plugin) {
-        this.plugin = plugin;
+    public PluginMessage(LobbySystem lobbySystem) {
+        _lobbySystem = lobbySystem;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class PluginMessage implements PluginMessageListener {
         output.writeUTF("Connect");
         output.writeUTF(server);
 
-        player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
+        player.sendPluginMessage(_lobbySystem, "BungeeCord", output.toByteArray());
     }
 }

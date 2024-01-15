@@ -23,6 +23,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import static org.bukkit.Bukkit.getServer;
 
 public class ConnectionListener implements Listener {
@@ -31,12 +34,14 @@ public class ConnectionListener implements Listener {
     private final MongoCollection<Document> _friendCollection;
     private final FriendService _friendService;
     private final Location _spawn;
+    private final HashMap<UUID, UUID> _friendRequests;
 
     public ConnectionListener(LobbySystem lobbySystem) {
         _lobbySystem = lobbySystem;
         _friendCollection = _lobbySystem.getMongoManager().getFriendCollection();
         _friendService = lobbySystem.getFriendService();
         _spawn = _lobbySystem.getConfigManager().getLobbySpawn();
+        _friendRequests = _lobbySystem.getFriendRequests();
     }
 
     @EventHandler
@@ -80,14 +85,14 @@ public class ConnectionListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         e.quitMessage(Component.text(""));
-        LobbySystem.getFriendRequests().remove(player.getUniqueId());
+        _friendRequests.remove(player.getUniqueId());
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
         e.leaveMessage(Component.text(""));
-        LobbySystem.getFriendRequests().remove(player.getUniqueId());
+        _friendRequests.remove(player.getUniqueId());
     }
 
     private void setSpawnItems(Player player) {

@@ -7,3 +7,4 @@ commands:
   lobby:
     aliases: [l, hub]
   friend:
+  server:

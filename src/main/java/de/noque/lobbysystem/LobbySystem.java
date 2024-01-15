@@ -1,6 +1,7 @@
 package de.noque.lobbysystem;
 
 import de.noque.lobbysystem.command.LobbyCommand;
+import de.noque.lobbysystem.command.ServerCommand;
 import de.noque.lobbysystem.command.SetobbyCommand;
 import de.noque.lobbysystem.command.FriendCommand;
 import de.noque.lobbysystem.manager.ConfigManager;
@@ -9,7 +10,6 @@ import de.noque.lobbysystem.manager.PropertyManager;
 import de.noque.lobbysystem.service.FriendService;
 import de.noque.lobbysystem.listener.ConnectionListener;
 import de.noque.lobbysystem.listener.InteractItemListener;
-import de.noque.lobbysystem.listener.InventoryListener;
 import de.noque.lobbysystem.listener.PreventionListener;
 import de.noque.lobbysystem.service.ServerService;
 import lombok.Getter;
@@ -26,19 +26,18 @@ public final class LobbySystem extends JavaPlugin {
 
     private @Getter ConfigManager configManager;
     private @Getter PropertyManager propertyManager;
-
     private @Getter MongoManager mongoManager;
+
     private @Getter FriendService friendService;
     private @Getter ServerService serverService;
 
-    @Getter
-    private static HashMap<UUID, UUID> friendRequests;
+    private @Getter HashMap<UUID, UUID> friendRequests;
 
     @Override
     public void onEnable() {
         mongoManager = new MongoManager(this);
-        friendService = new FriendService(mongoManager);
-        serverService = new ServerService(mongoManager);
+        friendService = new FriendService(this);
+        serverService = new ServerService(this);
 
         propertyManager = new PropertyManager();
         configManager = new ConfigManager(this);
@@ -69,13 +68,13 @@ public final class LobbySystem extends JavaPlugin {
         getCommand("setlobby").setExecutor(new SetobbyCommand(this));
         getCommand("lobby").setExecutor(new LobbyCommand(this));
         getCommand("friend").setExecutor(new FriendCommand(this));
+        getCommand("server").setExecutor(new ServerCommand(this));
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new ConnectionListener(this), this);
-        getServer().getPluginManager().registerEvents(new PreventionListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-        getServer().getPluginManager().registerEvents(new InteractItemListener(), this);
+        getServer().getPluginManager().registerEvents(new PreventionListener(this), this);
+        getServer().getPluginManager().registerEvents(new InteractItemListener(this), this);
     }
 
     private void initGamerules() {

@@ -19,25 +19,22 @@ import java.util.UUID;
 
 public class FriendCommand implements CommandExecutor {
 
-    private final HashMap<UUID, UUID> friendRequests = LobbySystem.getFriendRequests();
-
-    private final LobbySystem _lobbySystem;
-    private final FriendService friendService;
-    private final PropertyManager propertyManager;
+    private final FriendService _friendService;
+    private final PropertyManager _propertyManager;
+    private final HashMap<UUID, UUID> _friendRequests;
 
 
     public FriendCommand(LobbySystem lobbySystem) {
-        _lobbySystem = lobbySystem;
-        friendService = lobbySystem.getFriendService();
-        propertyManager = lobbySystem.getPropertyManager();
+        _friendService = lobbySystem.getFriendService();
+        _propertyManager = lobbySystem.getPropertyManager();
+        _friendRequests = lobbySystem.getFriendRequests();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (!(sender instanceof Player)) return false;
+        if (!(sender instanceof Player player)) return false;
         if (args.length < 1) return false;
 
-        Player player = (Player) sender;
         String subCommand = args[0];
 
         if (subCommand.equalsIgnoreCase("add"))
@@ -62,14 +59,14 @@ public class FriendCommand implements CommandExecutor {
         Player target = Bukkit.getPlayerExact(args[1]);
 
         if (target == null) {
-            player.sendMessage(Component.text(propertyManager.getMessage("friend.add.playernotonline"), NamedTextColor.RED));
+            player.sendMessage(Component.text(_propertyManager.getMessage("friend.add.playernotonline"), NamedTextColor.RED));
             return false;
         }
 
-        player.sendMessage(Component.text(propertyManager.getMessage("friend.add.playermessage", target), NamedTextColor.GREEN));
-        target.sendMessage(Component.text(propertyManager.getMessage("friend.add.targetmessage", player), NamedTextColor.GREEN));
+        player.sendMessage(Component.text(_propertyManager.getMessage("friend.add.playermessage", target), NamedTextColor.GREEN));
+        target.sendMessage(Component.text(_propertyManager.getMessage("friend.add.targetmessage", player), NamedTextColor.GREEN));
 
-        friendRequests.put(player.getUniqueId(), target.getUniqueId());
+        _friendRequests.put(player.getUniqueId(), target.getUniqueId());
         return true;
     }
 
@@ -78,7 +75,7 @@ public class FriendCommand implements CommandExecutor {
 
         //check if player is in friendlist
 
-        player.sendMessage(Component.text(propertyManager.getMessage("friend.remove.playermessage", target), NamedTextColor.GREEN));
+        player.sendMessage(Component.text(_propertyManager.getMessage("friend.remove.playermessage", target), NamedTextColor.GREEN));
         //remove from database
 
         return false;
@@ -88,18 +85,18 @@ public class FriendCommand implements CommandExecutor {
         Player target = Bukkit.getPlayerExact(args[1]);
 
         if (target == null) {
-            player.sendMessage(Component.text(propertyManager.getMessage("friend.accept.playernotonline"), NamedTextColor.RED));
+            player.sendMessage(Component.text(_propertyManager.getMessage("friend.accept.playernotonline"), NamedTextColor.RED));
             return false;
         }
 
-        if (friendRequests.get(target.getUniqueId()) != player.getUniqueId()) {
-            player.sendMessage(Component.text(propertyManager.getMessage("friend.accept.norequest"), NamedTextColor.RED));
+        if (_friendRequests.get(target.getUniqueId()) != player.getUniqueId()) {
+            player.sendMessage(Component.text(_propertyManager.getMessage("friend.accept.norequest"), NamedTextColor.RED));
             return false;
         }
 
-        friendService.addFriend(player, target);
-        player.sendMessage(Component.text(propertyManager.getMessage("friend.accept.playermessage", target), NamedTextColor.GREEN));
-        player.sendMessage(Component.text(propertyManager.getMessage("friend.accept.targetmessage", player), NamedTextColor.GREEN));
+        _friendService.addFriend(player, target);
+        player.sendMessage(Component.text(_propertyManager.getMessage("friend.accept.playermessage", target), NamedTextColor.GREEN));
+        player.sendMessage(Component.text(_propertyManager.getMessage("friend.accept.targetmessage", player), NamedTextColor.GREEN));
         return true;
     }
 
@@ -107,24 +104,24 @@ public class FriendCommand implements CommandExecutor {
         Player target = Bukkit.getPlayerExact(args[1]);
 
         if (target == null) {
-            player.sendMessage(Component.text(propertyManager.getMessage("friend.deny.playernotonline"), NamedTextColor.RED));
+            player.sendMessage(Component.text(_propertyManager.getMessage("friend.deny.playernotonline"), NamedTextColor.RED));
             return false;
         }
 
-        if (friendRequests.get(target.getUniqueId()) != player.getUniqueId()) {
-            player.sendMessage(Component.text(propertyManager.getMessage("friend.deny.norequest"), NamedTextColor.RED));
+        if (_friendRequests.get(target.getUniqueId()) != player.getUniqueId()) {
+            player.sendMessage(Component.text(_propertyManager.getMessage("friend.deny.norequest"), NamedTextColor.RED));
             return false;
         }
 
-        friendRequests.remove(target.getUniqueId(), player.getUniqueId());
-        player.sendMessage(Component.text(propertyManager.getMessage("friend.deny.success", target), NamedTextColor.GREEN));
+        _friendRequests.remove(target.getUniqueId(), player.getUniqueId());
+        player.sendMessage(Component.text(_propertyManager.getMessage("friend.deny.success", target), NamedTextColor.GREEN));
         return true;
     }
 
     private boolean list(String[] args, Player player) {
         player.sendMessage(Component.text( "Your Friends", NamedTextColor.GOLD));
 
-        List<UUID> friends = friendService.getFriends(player);
+        List<UUID> friends = _friendService.getFriends(player);
 
         for (UUID uuid : friends) {
             Player friend = (Player) Bukkit.getOfflinePlayer(uuid);

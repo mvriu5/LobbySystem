@@ -1,7 +1,7 @@
 package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
-import de.noque.lobbysystem.serverselector.SelectorGUI;
+import de.noque.lobbysystem.serverselector.SelectorMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -17,45 +17,51 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class InteractItemListener implements Listener {
 
+    private final LobbySystem _lobbySystem;
+
+    public InteractItemListener(LobbySystem lobbySystem) {
+        _lobbySystem = lobbySystem;
+    }
+
     @EventHandler
     public void onItemInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         Material material = player.getInventory().getItemInHand().getType();
 
-        /* HIDE PLAYERS */
-        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.GRAY_DYE) {
+        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.GRAY_DYE)
+            hidePlayers(player);
 
-            for(Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                player.hidePlayer(LobbySystem.INSTANCE, onlinePlayers);
-            }
+        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.LIME_DYE)
+            showPlayers(player);
 
-            ItemStack show = new ItemStack(Material.LIME_DYE);
-            ItemMeta showMeta = show.getItemMeta();
-            showMeta.displayName(Component.text("Show Players", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
-            show.setItemMeta(showMeta);
+        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.COMPASS)
+            new SelectorMenu().open(player);
+    }
 
-            player.getInventory().setItem(1, show);
+
+    private void hidePlayers(Player player) {
+        for(Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+            player.hidePlayer(_lobbySystem, onlinePlayers);
         }
 
-        /* SHOW PLAYERS */
-        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.LIME_DYE) {
+        ItemStack show = new ItemStack(Material.LIME_DYE);
+        ItemMeta showMeta = show.getItemMeta();
+        showMeta.displayName(Component.text("Show Players", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+        show.setItemMeta(showMeta);
 
-            for(Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                player.showPlayer(LobbySystem.INSTANCE, onlinePlayers);
-            }
+        player.getInventory().setItem(1, show);
+    }
 
-            ItemStack hide = new ItemStack(Material.GRAY_DYE);
-            ItemMeta hideMeta = hide.getItemMeta();
-            hideMeta.displayName(Component.text("Hide Players", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
-            hide.setItemMeta(hideMeta);
-
-            player.getInventory().setItem(1, hide);
+    private void showPlayers(Player player) {
+        for(Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+            player.showPlayer(_lobbySystem, onlinePlayers);
         }
 
-        /* SERVER SELECTOR */
-        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.COMPASS) {
-            SelectorGUI.open(player);
+        ItemStack hide = new ItemStack(Material.GRAY_DYE);
+        ItemMeta hideMeta = hide.getItemMeta();
+        hideMeta.displayName(Component.text("Hide Players", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+        hide.setItemMeta(hideMeta);
 
-        }
+        player.getInventory().setItem(1, hide);
     }
 }

@@ -1,5 +1,6 @@
 package de.noque.lobbysystem.listener;
 
+import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.manager.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
@@ -16,6 +17,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class PreventionListener implements Listener {
+
+    private final LobbySystem _lobbySystem;
+
+    public PreventionListener(LobbySystem lobbySystem) {
+        _lobbySystem = lobbySystem;
+    }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
@@ -67,6 +74,6 @@ public class PreventionListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        e.setRespawnLocation(ConfigManager.getLobbySpawn());
+        e.setRespawnLocation(_lobbySystem.getConfigManager().getLobbySpawn());
     }
 }

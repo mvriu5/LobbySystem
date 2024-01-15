@@ -1,6 +1,7 @@
 package de.noque.lobbysystem.service;
 
 import com.mongodb.client.model.Filters;
+import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.manager.MongoManager;
 import de.noque.lobbysystem.model.FriendDocument;
 import dev.morphia.Datastore;
@@ -16,8 +17,8 @@ public class FriendService {
 
     private final Datastore _datastore;
 
-    public FriendService(MongoManager mongoManager) {
-        _datastore = mongoManager.getDatastore();
+    public FriendService(LobbySystem lobbySystem) {
+        _datastore = lobbySystem.getMongoManager().getDatastore();
     }
 
     public void addDocument(Player player) {

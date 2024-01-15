@@ -19,9 +19,8 @@ public class LobbyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (!(sender instanceof Player)) return false;
+        if (!(sender instanceof Player player)) return false;
 
-        Player player = (Player) sender;
         player.teleport(configManager.getLobbySpawn());
 
         return false;
