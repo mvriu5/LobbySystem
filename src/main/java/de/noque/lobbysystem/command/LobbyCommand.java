@@ -2,7 +2,6 @@ package de.noque.lobbysystem.command;
 
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.manager.ConfigManager;
-import de.noque.lobbysystem.service.FriendService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -2,12 +2,13 @@ package de.noque.lobbysystem;
 
 import de.noque.lobbysystem.command.LobbyCommand;
 import de.noque.lobbysystem.command.SetobbyCommand;
+import de.noque.lobbysystem.listener.InteractItemListener;
+import de.noque.lobbysystem.listener.JoinListener;
+import de.noque.lobbysystem.listener.LeaveListener;
+import de.noque.lobbysystem.listener.PreventionListener;
 import de.noque.lobbysystem.manager.ConfigManager;
 import de.noque.lobbysystem.manager.MongoManager;
 import de.noque.lobbysystem.manager.PropertyManager;
-import de.noque.lobbysystem.listener.ConnectionListener;
-import de.noque.lobbysystem.listener.InteractItemListener;
-import de.noque.lobbysystem.listener.PreventionListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -35,9 +36,6 @@ public final class LobbySystem extends JavaPlugin {
         registerListeners();
         registerCommands();
         initGamerules();
-
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PluginMessage(this));
     }
 
     @Override
@@ -53,7 +51,8 @@ public final class LobbySystem extends JavaPlugin {
     }
 
     private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new ConnectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new LeaveListener(), this);
         getServer().getPluginManager().registerEvents(new PreventionListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractItemListener(this), this);
     }

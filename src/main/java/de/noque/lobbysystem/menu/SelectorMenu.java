@@ -2,7 +2,6 @@ package de.noque.lobbysystem.menu;
 
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.manager.PropertyManager;
-import de.noque.lobbysystem.model.ServerDocument;
 import de.noque.lobbysystem.utils.BukkitPlayerInventory;
 import de.noque.lobbysystem.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class SelectorMenu extends BukkitPlayerInventory {
 
