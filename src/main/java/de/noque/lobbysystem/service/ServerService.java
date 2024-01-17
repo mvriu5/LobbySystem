@@ -3,9 +3,8 @@ package de.noque.lobbysystem.service;
 import com.mongodb.client.model.Filters;
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.model.ServerDocument;
-import de.noque.lobbysystem.model.State;
+import de.noque.lobbysystem.model.enums.State;
 import dev.morphia.Datastore;
-import dev.morphia.DeleteOptions;
 import dev.morphia.query.experimental.filters.Filter;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class ServerService {
     }
 
     public boolean remove(String name) {
-        ServerDocument document = _datastore.find(ServerDocument.class).filter((Filter) Filters.eq("name", name)).first();
+        var document = _datastore.find(ServerDocument.class).filter((Filter) Filters.eq("name", name)).first();
 
         if (document == null) return false;
 

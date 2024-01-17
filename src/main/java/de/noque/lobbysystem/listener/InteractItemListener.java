@@ -1,7 +1,7 @@
 package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
-import de.noque.lobbysystem.serverselector.SelectorMenu;
+import de.noque.lobbysystem.menu.SelectorMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -35,9 +35,8 @@ public class InteractItemListener implements Listener {
             showPlayers(player);
 
         if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.COMPASS)
-            new SelectorMenu().open(player);
+            new SelectorMenu(_lobbySystem).open(player);
     }
-
 
     private void hidePlayers(Player player) {
         for(Player onlinePlayers : Bukkit.getOnlinePlayers()) {

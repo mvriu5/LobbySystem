@@ -1,5 +1,6 @@
 package de.noque.lobbysystem.model;
 
+import de.noque.lobbysystem.model.enums.State;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Data;
@@ -10,7 +11,7 @@ public class ServerDocument {
 
     private @Id ObjectId Id;
     private String Name;
-    private State State;
+    private de.noque.lobbysystem.model.enums.State State;
     private String GameMode;
 
     public ServerDocument() {}

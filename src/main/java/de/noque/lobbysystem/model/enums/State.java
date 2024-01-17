@@ -1,4 +1,4 @@
-package de.noque.lobbysystem.model;
+package de.noque.lobbysystem.model.enums;
 
 public enum State {
 

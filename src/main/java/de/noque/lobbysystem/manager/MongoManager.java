@@ -19,7 +19,7 @@ public class MongoManager {
     private final @Getter Datastore datastore;
 
     @Getter
-    private MongoCollection<Document> serverCollection, friendCollection;
+    private MongoCollection<Document> serverCollection, friendCollection, friendRequestCollection;
 
     public MongoManager(LobbySystem lobbySystem) {
         var propertyManager = lobbySystem.getPropertyManager();
@@ -29,6 +29,7 @@ public class MongoManager {
 
         serverCollection = _database.getCollection(propertyManager.getDbProperty("servers"));
         friendCollection = _database.getCollection(propertyManager.getDbProperty("friends"));
+        friendRequestCollection = _database.getCollection(propertyManager.getDbProperty("friendrequests"));
 
         datastore = Morphia.createDatastore(MongoClients.create(""), "");
         datastore.getMapper().mapPackage("com.mongodb.morphia.entities");

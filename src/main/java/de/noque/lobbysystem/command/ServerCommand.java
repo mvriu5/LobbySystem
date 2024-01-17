@@ -1,12 +1,17 @@
 package de.noque.lobbysystem.command;
 
 import de.noque.lobbysystem.LobbySystem;
+import de.noque.lobbysystem.model.ServerDocument;
 import de.noque.lobbysystem.service.ServerService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ServerCommand implements CommandExecutor {
 
@@ -32,7 +37,7 @@ public class ServerCommand implements CommandExecutor {
             return remove(args, player);
 
         if (subCommand.equalsIgnoreCase("list"))
-            return list(player);
+            return getList(player);
 
         return false;
     }
@@ -77,7 +82,16 @@ public class ServerCommand implements CommandExecutor {
         return false;
     }
 
-    private boolean list(Player player) {
+    private boolean getList(Player player) {
+        List<ServerDocument> servers = _serverService.loadAll();
+
+        servers.forEach((server) ->
+            player.sendMessage(Component.text(
+                    NamedTextColor.YELLOW + server.getName() +
+                            NamedTextColor.GREEN + " [" + server.getGameMode() + "]" +
+                            NamedTextColor.GRAY + " - " + server.getState()))
+        );
+
         return false;
     }
 

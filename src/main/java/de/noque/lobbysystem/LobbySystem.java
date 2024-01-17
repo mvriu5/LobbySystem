@@ -7,6 +7,7 @@ import de.noque.lobbysystem.command.FriendCommand;
 import de.noque.lobbysystem.manager.ConfigManager;
 import de.noque.lobbysystem.manager.MongoManager;
 import de.noque.lobbysystem.manager.PropertyManager;
+import de.noque.lobbysystem.service.FriendRequestService;
 import de.noque.lobbysystem.service.FriendService;
 import de.noque.lobbysystem.listener.ConnectionListener;
 import de.noque.lobbysystem.listener.InteractItemListener;
@@ -30,17 +31,17 @@ public final class LobbySystem extends JavaPlugin {
 
     private @Getter FriendService friendService;
     private @Getter ServerService serverService;
-
-    private @Getter HashMap<UUID, UUID> friendRequests;
+    private @Getter FriendRequestService friendRequestService;
 
     @Override
     public void onEnable() {
         mongoManager = new MongoManager(this);
-        friendService = new FriendService(this);
-        serverService = new ServerService(this);
-
         propertyManager = new PropertyManager();
         configManager = new ConfigManager(this);
+
+        friendService = new FriendService(this);
+        serverService = new ServerService(this);
+        friendRequestService = new FriendRequestService(this);
 
         config = this.getConfig();
         saveConfig();
@@ -50,15 +51,12 @@ public final class LobbySystem extends JavaPlugin {
         registerCommands();
         initGamerules();
 
-        friendRequests = new HashMap<>();
-
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PluginMessage(this));
     }
 
     @Override
     public void onDisable() {
-        friendRequests.clear();
         mongoManager.disconnect();
     }
 

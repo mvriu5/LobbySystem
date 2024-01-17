@@ -22,7 +22,7 @@ public class FriendService {
     }
 
     public void addDocument(Player player) {
-        FriendDocument document = new FriendDocument(player.getUniqueId(), new ArrayList<>());
+        var document = new FriendDocument(player.getUniqueId(), new ArrayList<>());
         _datastore.save(document);
     }
 
@@ -47,7 +47,7 @@ public class FriendService {
     }
 
     public List<UUID> getFriends(Player player) {
-        FriendDocument document = _datastore.find(FriendDocument.class)
+        var document = _datastore.find(FriendDocument.class)
                 .filter((Filter) Filters.eq("", player.getUniqueId())).first();
 
         if (document == null) return null;

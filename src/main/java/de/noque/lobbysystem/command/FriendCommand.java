@@ -2,6 +2,7 @@ package de.noque.lobbysystem.command;
 
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.manager.PropertyManager;
+import de.noque.lobbysystem.service.FriendRequestService;
 import de.noque.lobbysystem.service.FriendService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,13 +22,13 @@ public class FriendCommand implements CommandExecutor {
 
     private final FriendService _friendService;
     private final PropertyManager _propertyManager;
-    private final HashMap<UUID, UUID> _friendRequests;
+    private final FriendRequestService _friendRequestService;
 
 
     public FriendCommand(LobbySystem lobbySystem) {
         _friendService = lobbySystem.getFriendService();
         _propertyManager = lobbySystem.getPropertyManager();
-        _friendRequests = lobbySystem.getFriendRequests();
+        _friendRequestService = lobbySystem.getFriendRequestService();
     }
 
     @Override
@@ -56,12 +57,7 @@ public class FriendCommand implements CommandExecutor {
     }
 
     private boolean add(String[] args, Player player) {
-        Player target = Bukkit.getPlayerExact(args[1]);
-
-        if (target == null) {
-            player.sendMessage(Component.text(_propertyManager.getMessage("friend.add.playernotonline"), NamedTextColor.RED));
-            return false;
-        }
+        var target = Bukkit.getOfflinePlayer(args[1]);
 
         player.sendMessage(Component.text(_propertyManager.getMessage("friend.add.playermessage", target), NamedTextColor.GREEN));
         target.sendMessage(Component.text(_propertyManager.getMessage("friend.add.targetmessage", player), NamedTextColor.GREEN));
