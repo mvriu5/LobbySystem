@@ -1,25 +1,18 @@
 package de.noque.lobbysystem;
 
 import de.noque.lobbysystem.command.LobbyCommand;
-import de.noque.lobbysystem.command.ServerCommand;
 import de.noque.lobbysystem.command.SetobbyCommand;
-import de.noque.lobbysystem.command.FriendCommand;
 import de.noque.lobbysystem.manager.ConfigManager;
 import de.noque.lobbysystem.manager.MongoManager;
 import de.noque.lobbysystem.manager.PropertyManager;
-import de.noque.lobbysystem.service.FriendRequestService;
-import de.noque.lobbysystem.service.FriendService;
 import de.noque.lobbysystem.listener.ConnectionListener;
 import de.noque.lobbysystem.listener.InteractItemListener;
 import de.noque.lobbysystem.listener.PreventionListener;
-import de.noque.lobbysystem.service.ServerService;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.*;
 
 public final class LobbySystem extends JavaPlugin {
 
@@ -29,19 +22,11 @@ public final class LobbySystem extends JavaPlugin {
     private @Getter PropertyManager propertyManager;
     private @Getter MongoManager mongoManager;
 
-    private @Getter FriendService friendService;
-    private @Getter ServerService serverService;
-    private @Getter FriendRequestService friendRequestService;
-
     @Override
     public void onEnable() {
         mongoManager = new MongoManager(this);
         propertyManager = new PropertyManager();
         configManager = new ConfigManager(this);
-
-        friendService = new FriendService(this);
-        serverService = new ServerService(this);
-        friendRequestService = new FriendRequestService(this);
 
         config = this.getConfig();
         saveConfig();
@@ -65,8 +50,6 @@ public final class LobbySystem extends JavaPlugin {
     private void registerCommands() {
         getCommand("setlobby").setExecutor(new SetobbyCommand(this));
         getCommand("lobby").setExecutor(new LobbyCommand(this));
-        getCommand("friend").setExecutor(new FriendCommand(this));
-        getCommand("server").setExecutor(new ServerCommand(this));
     }
 
     private void registerListeners() {

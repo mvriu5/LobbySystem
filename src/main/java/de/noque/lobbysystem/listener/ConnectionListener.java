@@ -32,24 +32,12 @@ public class ConnectionListener implements Listener {
 
     private final LobbySystem _lobbySystem;
     private final MongoCollection<Document> _friendCollection;
-    private final FriendService _friendService;
     private final Location _spawn;
-    private final HashMap<UUID, UUID> _friendRequests;
 
     public ConnectionListener(LobbySystem lobbySystem) {
         _lobbySystem = lobbySystem;
         _friendCollection = _lobbySystem.getMongoManager().getFriendCollection();
-        _friendService = lobbySystem.getFriendService();
         _spawn = _lobbySystem.getConfigManager().getLobbySpawn();
-        _friendRequests = _lobbySystem.getFriendRequests();
-    }
-
-    @EventHandler
-    public void onLogin(PlayerLoginEvent e) {
-        Player player = e.getPlayer();
-        if (_friendCollection.find(Filters.eq("uuid", player.getUniqueId())).first() == null) {
-            _friendService.addDocument(player);
-        }
     }
 
     @EventHandler
