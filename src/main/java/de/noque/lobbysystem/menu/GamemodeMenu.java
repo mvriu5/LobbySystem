@@ -1,11 +1,9 @@
 package de.noque.lobbysystem.menu;
 
-import com.mongodb.client.model.Filters;
+import de.noque.backend.model.ServerDocument;
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.utils.BukkitPlayerInventory;
 import de.noque.lobbysystem.utils.ItemBuilder;
-import dev.morphia.Datastore;
-import dev.morphia.query.experimental.filters.Filter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -18,13 +16,11 @@ import java.util.List;
 
 public class GamemodeMenu extends BukkitPlayerInventory {
 
-    private final Datastore _datastore;
     private final List<ServerDocument> _servers;
 
     public GamemodeMenu(LobbySystem lobbySystem, Component title, int rows) {
         super(title, rows);
         _servers = lobbySystem.getServerService().loadAllFromGameMode(title.toString());
-        _datastore = lobbySystem.getMongoManager().getDatastore();
     }
 
     public void open(Player player) {

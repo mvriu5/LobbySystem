@@ -1,5 +1,6 @@
 package de.noque.lobbysystem.listener;
 
+import de.noque.backend.model.PlayerDocument;
 import de.noque.lobbysystem.LobbySystem;
 import de.noque.lobbysystem.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -14,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.List;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -30,29 +33,15 @@ public class JoinListener implements Listener {
         Player player = e.getPlayer();
         Location spawn = _lobbySystem.getConfigManager().getLobbySpawn();
 
-        setSpawnItems(player);
+        List<PlayerDocument> friends = _lobbySystem.getFriendService().getFriends(player);
+        _lobbySystem.getFriendList().put(player, friends);
 
-        player.teleport(spawn);
-        player.setCompassTarget(spawn);
-        player.setGameMode(GameMode.SURVIVAL);
-        player.setHealth(20.0);
-        player.setFoodLevel(20);
-        player.setExp(0);
+        setSpawnItems(player);
+        setSpawnProperties(player, spawn);
+        sendActionbar(player);
+        sendTitle(player);
 
         e.joinMessage(Component.text(""));
-
-        BukkitScheduler scheduler = getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(_lobbySystem, () -> {
-            player.sendActionBar(Component.text("+ ", NamedTextColor.GOLD)
-                    .append(Component.text("New ", NamedTextColor.YELLOW))
-                    .append(Component.text("ItemRACE ", NamedTextColor.GOLD))
-                    .append(Component.text("Update", NamedTextColor.YELLOW))
-                    .decoration(TextDecoration.ITALIC, false));
-        }, 0L, 20L);
-
-        player.showTitle(Title.title(
-                Component.text("Welcome to", NamedTextColor.LIGHT_PURPLE),
-                Component.text("noque.club", NamedTextColor.YELLOW)));
     }
 
     private void setSpawnItems(Player player) {
@@ -73,5 +62,31 @@ public class JoinListener implements Listener {
         player.getInventory().setItem(3, selector.toItemStack());
         player.getInventory().setItem(5, settings.toItemStack());
         player.getInventory().setItem(7, friends.toItemStack());
+    }
+
+    private void setSpawnProperties(Player player, Location spawn) {
+        player.teleport(spawn);
+        player.setCompassTarget(spawn);
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setHealth(20.0);
+        player.setFoodLevel(20);
+        player.setExp(0);
+    }
+
+    private void sendTitle(Player player) {
+        player.showTitle(Title.title(
+                Component.text("Welcome to", NamedTextColor.LIGHT_PURPLE),
+                Component.text("noque.club", NamedTextColor.YELLOW)));
+    }
+
+    private void sendActionbar(Player player) {
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(_lobbySystem, () -> {
+            player.sendActionBar(Component.text("+ ", NamedTextColor.GOLD)
+                    .append(Component.text("New ", NamedTextColor.YELLOW))
+                    .append(Component.text("ItemRACE ", NamedTextColor.GOLD))
+                    .append(Component.text("Update", NamedTextColor.YELLOW))
+                    .decoration(TextDecoration.ITALIC, false));
+        }, 0L, 20L);
     }
 }

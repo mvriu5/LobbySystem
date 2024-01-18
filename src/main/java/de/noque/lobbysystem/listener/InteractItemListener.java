@@ -1,6 +1,7 @@
 package de.noque.lobbysystem.listener;
 
 import de.noque.lobbysystem.LobbySystem;
+import de.noque.lobbysystem.menu.FriendMenu;
 import de.noque.lobbysystem.menu.SelectorMenu;
 import de.noque.lobbysystem.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -37,7 +38,7 @@ public class InteractItemListener implements Listener {
             new SelectorMenu(_lobbySystem).open(player);
 
         if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && material == Material.CHEST)
-            ;
+            new FriendMenu(_lobbySystem, player).open(player);
     }
 
     private void hidePlayers(Player player) {

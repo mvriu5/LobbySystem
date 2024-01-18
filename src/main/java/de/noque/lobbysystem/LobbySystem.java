@@ -1,5 +1,9 @@
 package de.noque.lobbysystem;
 
+import de.noque.backend.Network;
+import de.noque.backend.model.PlayerDocument;
+import de.noque.backend.service.FriendService;
+import de.noque.backend.service.ServerService;
 import de.noque.lobbysystem.command.LobbyCommand;
 import de.noque.lobbysystem.command.SetobbyCommand;
 import de.noque.lobbysystem.listener.InteractItemListener;
@@ -7,13 +11,16 @@ import de.noque.lobbysystem.listener.JoinListener;
 import de.noque.lobbysystem.listener.LeaveListener;
 import de.noque.lobbysystem.listener.PreventionListener;
 import de.noque.lobbysystem.manager.ConfigManager;
-import de.noque.lobbysystem.manager.MongoManager;
 import de.noque.lobbysystem.manager.PropertyManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
+import java.util.List;
 
 public final class LobbySystem extends JavaPlugin {
 
@@ -21,13 +28,23 @@ public final class LobbySystem extends JavaPlugin {
 
     private @Getter ConfigManager configManager;
     private @Getter PropertyManager propertyManager;
-    private @Getter MongoManager mongoManager;
+
+    private @Getter Network network;
+    private @Getter FriendService friendService;
+    private @Getter ServerService serverService;
+
+    private @Getter HashMap<Player, List<PlayerDocument>> friendList;
 
     @Override
     public void onEnable() {
-        mongoManager = new MongoManager(this);
         propertyManager = new PropertyManager();
         configManager = new ConfigManager(this);
+
+        network = new Network();
+        friendService = new FriendService(network);
+        serverService = new ServerService(network);
+
+        friendList = new HashMap<>();
 
         config = this.getConfig();
         saveConfig();
@@ -40,10 +57,7 @@ public final class LobbySystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        mongoManager.disconnect();
     }
-
-
 
     private void registerCommands() {
         getCommand("setlobby").setExecutor(new SetobbyCommand(this));
